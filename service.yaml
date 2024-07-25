@@ -1,16 +1,37 @@
 # Service definition
-name: ChangeThisRepoName
-description: template-GoModule
+name: imaging
+description: Reads an image from a video source (v4l2/sim), processes it and sends it to the controller
 
 # No dependencies
 dependencies: []
 
-# No outputs (You'll probably want to update this or `dependencies`)
-outputs: []
+outputs:
+  - name: path
+    address: tcp://localhost:9091
 
 # Runtime options
 options:
-  - name: example_option
-    type: int     # Can be int, float, string, bool
-    mutable: true # Can be changed at runtime
-    default: 1    # Default value
+  - name: threshold-value
+    type: int
+    mutable: true
+    # if this value is > 0, the image will be thresholded. Otherwise it will be sent as is
+    # the thresholding value does not do anything else.
+    default: 1
+  - name: gstreamer-pipeline
+    type: string
+    mutable: false
+    default: "v4l2src device=/dev/video2 ! image/jpeg, width=%d, height=%d, framerate=%d/1 ! jpegdec ! videoconvert n-threads=4 ! appsink caps=video/x-raw,format=GRAY8 name=appsink"
+# options for the gstreamer pipeline
+  - name: imgWidth
+    type: int
+    mutable: false
+    default: 640
+  - name: imgHeight
+    type: int
+    mutable: false
+    default: 480
+  - name: imgFPS
+    type: int
+    mutable: false
+    default: 30
+

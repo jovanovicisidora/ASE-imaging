@@ -2,7 +2,12 @@
 .PHONY: build start clean test
 
 BUILD_DIR=bin/
-BINARY_NAME=ChangeThisToRepoName
+BINARY_NAME=imaging
+
+lint:
+	@echo "Lint check..."
+	@golangci-lint run
+
 
 build:
 	@echo "building ${BINARY_NAME}"
