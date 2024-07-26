@@ -1,6 +1,6 @@
 module vu/ase/gocvimaging
 
-go 1.21.6
+go 1.22.0
 
 require (
 	github.com/VU-ASE/rovercom v1.0.2
