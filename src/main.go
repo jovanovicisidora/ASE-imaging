@@ -6,11 +6,11 @@ import (
 	"os"
 	"time"
 
-	pb_output "github.com/VU-ASE/pkg-CommunicationDefinitions/v2/packages/go/outputs"
-	pb_systemmanager_messages "github.com/VU-ASE/pkg-CommunicationDefinitions/v2/packages/go/systemmanager"
+	pb_output "github.com/VU-ASE/rovercom/packages/go/outputs"
+	pb_core_messages "github.com/VU-ASE/rovercom/packages/go/core"
 	"google.golang.org/protobuf/proto"
 
-	servicerunner "github.com/VU-ASE/pkg-ServiceRunner/v2/src"
+	roverlib "github.com/VU-ASE/roverlib/src"
 	zmq "github.com/pebbe/zmq4"
 	"gocv.io/x/gocv"
 
@@ -108,31 +108,31 @@ func getLongestConsecutiveWhiteSlice(sliceDescriptors []SliceDescriptor, preferr
 var thresholdValue int
 
 // Runs the program logic
-func run(service servicerunner.ResolvedService, sysmanInfo servicerunner.SystemManagerInfo, tuning *pb_systemmanager_messages.TuningState) error {
+func run(service roverlib.ResolvedService, sysmanInfo roverlib.SystemManagerInfo, tuning *pb_core_messages.TuningState) error {
 	// Fetch runtime parameters
 	// Fetch pipeline from tuning (statically defined in service.yaml)
-	gstPipeline, err := servicerunner.GetTuningString("gstreamer-pipeline", tuning)
+	gstPipeline, err := roverlib.GetTuningString("gstreamer-pipeline", tuning)
 	if err != nil {
 		log.Err(err).Msg("Failed to get gstreamer-pipeline from tuning. Is it defined in service.yaml?")
 		return err
 	}
 	// Fetch thresholding value
-	thresholdValue, err = servicerunner.GetTuningInt("threshold-value", tuning)
+	thresholdValue, err = roverlib.GetTuningInt("threshold-value", tuning)
 	if err != nil {
 		return err
 	}
 	// Fetch width to put in gstreaqmer pipeline
-	imgWidth, err := servicerunner.GetTuningInt("imgWidth", tuning)
+	imgWidth, err := roverlib.GetTuningInt("imgWidth", tuning)
 	if err != nil {
 		return err
 	}
 	// Fetch height to put in gstreamer pipeline
-	imgHeight, err := servicerunner.GetTuningInt("imgHeight", tuning)
+	imgHeight, err := roverlib.GetTuningInt("imgHeight", tuning)
 	if err != nil {
 		return err
 	}
 	// Fetch image fps to put in gstreamer pipeline
-	imgFps, err := servicerunner.GetTuningInt("imgFPS", tuning)
+	imgFps, err := roverlib.GetTuningInt("imgFPS", tuning)
 	if err != nil {
 		return err
 	}
@@ -291,7 +291,7 @@ func run(service servicerunner.ResolvedService, sysmanInfo servicerunner.SystemM
 		if longestConsecutive != nil {
 			middleX := (longestConsecutive.Start + longestConsecutive.End) / 2
 			trajectory_points = append(trajectory_points, &pb_output.CameraSensorOutput_Trajectory_Point{
-				X: uint32(middleX),
+				X: int32(middleX),
 				Y: sliceY,
 			})
 
@@ -315,7 +315,6 @@ func run(service servicerunner.ResolvedService, sysmanInfo servicerunner.SystemM
 						Width:  640,
 						Height: 480,
 					},
-					Flags: 0,
 				},
 			},
 		}
@@ -336,10 +335,10 @@ func run(service servicerunner.ResolvedService, sysmanInfo servicerunner.SystemM
 	}
 }
 
-func onTuningState(tuningState *pb_systemmanager_messages.TuningState) {
+func onTuningState(tuningState *pb_core_messages.TuningState) {
 	log.Warn().Msg("Tuning state received")
 	// Fetch thresholding value
-	newThreshold, err := servicerunner.GetTuningInt("threshold-value", tuningState)
+	newThreshold, err := roverlib.GetTuningInt("threshold-value", tuningState)
 	if err != nil {
 		log.Err(err).Msg("Failed to get threshold value from tuning")
 		return
@@ -353,5 +352,5 @@ func onTerminate(sig os.Signal) {
 
 // Used to start the program with the correct arguments
 func main() {
-	servicerunner.Run(run, onTuningState, onTerminate, false)
+	roverlib.Run(run, onTuningState, onTerminate, false)
 }
