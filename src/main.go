@@ -108,7 +108,7 @@ func getLongestConsecutiveWhiteSlice(sliceDescriptors []SliceDescriptor, preferr
 var thresholdValue int
 
 // Runs the program logic
-func run(service roverlib.ResolvedService, sysmanInfo roverlib.SystemManagerInfo, tuning *pb_core_messages.TuningState) error {
+func run(service roverlib.ResolvedService, sysmanInfo roverlib.CoreInfo, tuning *pb_core_messages.TuningState) error {
 	// Fetch runtime parameters
 	// Fetch pipeline from tuning (statically defined in service.yaml)
 	gstPipeline, err := roverlib.GetTuningString("gstreamer-pipeline", tuning)
