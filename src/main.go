@@ -7,12 +7,9 @@ import (
 	"time"
 
 	pb_output "github.com/VU-ASE/rovercom/packages/go/outputs"
-	pb_core_messages "github.com/VU-ASE/rovercom/packages/go/core"
-	"google.golang.org/protobuf/proto"
-
-	roverlib "github.com/VU-ASE/roverlib/src"
-	zmq "github.com/pebbe/zmq4"
+	roverlib "github.com/VU-ASE/roverlib-go/src"
 	"gocv.io/x/gocv"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/rs/zerolog/log"
 )
@@ -25,6 +22,7 @@ type SliceDescriptor struct {
 // This function will cast a vertical scan on the given x-line, starting at coordinate Y and proceeding onwards (= towards a smaller Y)
 // it returns the Y-coordinate of the first black pixel it encounters
 func verticalScanUp(image *gocv.Mat, x int, startY int) int {
+
 	y := startY
 	for y >= 0 {
 		if image.GetUCharAt(y, x) == 0 {
@@ -108,48 +106,43 @@ func getLongestConsecutiveWhiteSlice(sliceDescriptors []SliceDescriptor, preferr
 var thresholdValue int
 
 // Runs the program logic
-func run(service roverlib.ResolvedService, sysmanInfo roverlib.CoreInfo, tuning *pb_core_messages.TuningState) error {
-	// Fetch runtime parameters
-	// Fetch pipeline from tuning (statically defined in service.yaml)
-	gstPipeline, err := roverlib.GetTuningString("gstreamer-pipeline", tuning)
+func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration) error {
+	if configuration == nil {
+		return fmt.Errorf("configuration cannot be accessed")
+	}
+
+	//
+	// Get configuration values from service.json
+	//
+	gstPipeline, err := configuration.GetStringSafe("gstreamer-pipeline")
 	if err != nil {
 		log.Err(err).Msg("Failed to get gstreamer-pipeline from tuning. Is it defined in service.yaml?")
 		return err
 	}
-	// Fetch thresholding value
-	thresholdValue, err = roverlib.GetTuningInt("threshold-value", tuning)
+	thresholdValue, err = configuration.GetIntSafe("threshold-value")
 	if err != nil {
 		return err
 	}
 	// Fetch width to put in gstreaqmer pipeline
-	imgWidth, err := roverlib.GetTuningInt("imgWidth", tuning)
+	imgWidth, err := configuration.GetIntSafe("imgWidth")
 	if err != nil {
 		return err
 	}
 	// Fetch height to put in gstreamer pipeline
-	imgHeight, err := roverlib.GetTuningInt("imgHeight", tuning)
+	imgHeight, err := configuration.GetIntSafe("imgHeight")
 	if err != nil {
 		return err
 	}
 	// Fetch image fps to put in gstreamer pipeline
-	imgFps, err := roverlib.GetTuningInt("imgFPS", tuning)
+	imgFps, err := configuration.GetIntSafe("imgFPS")
 	if err != nil {
 		return err
 	}
 	// Create the gstreamer pipeline with the fetched parameters
 	gstPipeline = fmt.Sprintf(gstPipeline, imgWidth, imgHeight, imgFps)
 
-	// Fetch address to send output to
-	outputAddr, err := service.GetOutputAddress("path")
-	if err != nil {
-		return err
-	}
-	// And build publisher socket using ZMQ
-	sock, err := zmq.NewSocket(zmq.PUB)
-	if err != nil {
-		return err
-	}
-	err = sock.Bind(outputAddr)
+	// Create socket to send images to
+	imageOutput := service.GetWriteStream("path")
 	if err != nil {
 		return err
 	}
@@ -325,32 +318,23 @@ func run(service roverlib.ResolvedService, sysmanInfo roverlib.CoreInfo, tuning 
 		}
 
 		// Send the image
-		i, err := sock.SendBytes(outputBytes, 0)
+		err = imageOutput.WriteBytes(outputBytes)
 		if err != nil {
 			log.Err(err).Msg("Error sending image")
 			return err
 		}
 
-		log.Debug().Int("bytes", i).Msg("Sent image")
+		log.Debug().Msg("Sent image")
 	}
 }
 
-func onTuningState(tuningState *pb_core_messages.TuningState) {
-	log.Warn().Msg("Tuning state received")
-	// Fetch thresholding value
-	newThreshold, err := roverlib.GetTuningInt("threshold-value", tuningState)
-	if err != nil {
-		log.Err(err).Msg("Failed to get threshold value from tuning")
-		return
-	}
-	thresholdValue = newThreshold
-}
-
-func onTerminate(sig os.Signal) {
+func onTerminate(sig os.Signal) error {
 	log.Info().Msg("Terminating")
+
+	return nil
 }
 
 // Used to start the program with the correct arguments
 func main() {
-	roverlib.Run(run, onTuningState, onTerminate, false)
+	roverlib.Run(run, onTerminate)
 }
