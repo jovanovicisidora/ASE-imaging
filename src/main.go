@@ -22,7 +22,6 @@ type SliceDescriptor struct {
 // This function will cast a vertical scan on the given x-line, starting at coordinate Y and proceeding onwards (= towards a smaller Y)
 // it returns the Y-coordinate of the first black pixel it encounters
 func verticalScanUp(image *gocv.Mat, x int, startY int) int {
-
 	y := startY
 	for y >= 0 {
 		if image.GetUCharAt(y, x) == 0 {
@@ -140,6 +139,7 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 	}
 	// Create the gstreamer pipeline with the fetched parameters
 	gstPipeline = fmt.Sprintf(gstPipeline, imgWidth, imgHeight, imgFps)
+	log.Info().Str("pipeline", gstPipeline).Msg("Using gstreamer pipeline")
 
 	// Create socket to send images to
 	imageOutput := service.GetWriteStream("path")
@@ -148,7 +148,9 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 	}
 
 	// Open video capture using gstreamer pipeline
-	cam, err := gocv.OpenVideoCapture(gstPipeline)
+	// todo: re-enable gst when gocv is fixed
+	// cam, err := gocv.OpenVideoCapture(gstPipeline)
+	cam, err := gocv.OpenVideoCapture(0)
 	if err != nil {
 		return err
 	}
@@ -305,8 +307,8 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 					},
 					Trajectory: &pb_output.CameraSensorOutput_Trajectory{
 						Points: trajectory_points,
-						Width:  640,
-						Height: 480,
+						Width:  uint32(imgWidth),
+						Height: uint32(imgHeight),
 					},
 				},
 			},
@@ -320,7 +322,7 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 		// Send the image
 		err = imageOutput.WriteBytes(outputBytes)
 		if err != nil {
-			log.Err(err).Msg("Error sending image")
+			log.Err(err).Int("byte len", len(outputBytes)).Msg("Error sending image")
 			return err
 		}
 
