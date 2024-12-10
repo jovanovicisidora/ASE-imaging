@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/VU-ASE/imaging/compare/v1.0.0...v1.1.0) (2024-12-10)
+
+
+### Features
+
+* compliant with roverlib 1.1.6 ([43dcb1b](https://github.com/VU-ASE/imaging/commit/43dcb1b1d021ed6f166d152bb311e65e72b11913))
+
+
+### Bug Fixes
+
+* rename CoreInfo ([5f3e4e5](https://github.com/VU-ASE/imaging/commit/5f3e4e50d1f2a4516b5959e55488e285f1cb4cd4))
+
 ## 1.0.0 (2024-07-26)
 
 
