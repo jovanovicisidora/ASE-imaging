@@ -10,12 +10,13 @@ commands:
 
 # No service inputs
 inputs: []
+
 outputs:
   - path
 
-options:
+configuration:
   - name: threshold-value
-    type: int
+    type: float
     tunable: true
     # if this value is > 0, the image will be thresholded. Otherwise it will be sent as is
     # the thresholding value does not do anything else.
@@ -25,14 +26,14 @@ options:
     tunable: false
     value: "v4l2src device=/dev/video2 ! image/jpeg, width=%d, height=%d, framerate=%d/1 ! jpegdec ! videoconvert n-threads=4 ! appsink caps=video/x-raw,format=GRAY8 name=appsink"
 # options for the gstreamer pipeline
-  - name: imgWidth
-    type: int
+  - name: img-width
+    type: float
     tunable: false
     value: 640
-  - name: imgHeight
-    type: int
+  - name: img-height
+    type: float
     tunable: false
     value: 480
-  - name: imgFPS
-    type: int
+  - name: img-fps
+    type: float
     value: 30
