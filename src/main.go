@@ -118,25 +118,29 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 		log.Err(err).Msg("Failed to get gstreamer-pipeline from tuning. Is it defined in service.yaml?")
 		return err
 	}
-	thresholdValue, err = configuration.GetIntSafe("threshold-value")
+	thFloat, err := configuration.GetFloatSafe("threshold-value")
 	if err != nil {
 		return err
 	}
+	thresholdValue = int(thFloat)
 	// Fetch width to put in gstreaqmer pipeline
-	imgWidth, err := configuration.GetIntSafe("imgWidth")
+	imgWidthFloat, err := configuration.GetFloatSafe("img-width")
 	if err != nil {
 		return err
 	}
+	imgWidth := int(imgWidthFloat)
 	// Fetch height to put in gstreamer pipeline
-	imgHeight, err := configuration.GetIntSafe("imgHeight")
+	imgHeightFloat, err := configuration.GetFloatSafe("img-height")
 	if err != nil {
 		return err
 	}
+	imgHeight := int(imgHeightFloat)
 	// Fetch image fps to put in gstreamer pipeline
-	imgFps, err := configuration.GetIntSafe("imgFPS")
+	imgFpsFloat, err := configuration.GetFloatSafe("img-fps")
 	if err != nil {
 		return err
 	}
+	imgFps := int(imgFpsFloat)
 	// Create the gstreamer pipeline with the fetched parameters
 	gstPipeline = fmt.Sprintf(gstPipeline, imgWidth, imgHeight, imgFps)
 	log.Info().Str("pipeline", gstPipeline).Msg("Using gstreamer pipeline")
@@ -148,9 +152,7 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 	}
 
 	// Open video capture using gstreamer pipeline
-	// todo: re-enable gst when gocv is fixed
-	// cam, err := gocv.OpenVideoCapture(gstPipeline)
-	cam, err := gocv.OpenVideoCapture(0)
+	cam, err := gocv.OpenVideoCapture(gstPipeline)
 	if err != nil {
 		return err
 	}
