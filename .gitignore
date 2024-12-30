@@ -22,3 +22,4 @@ go.work
 
 # Build outputs
 bin
+.DS_Store
