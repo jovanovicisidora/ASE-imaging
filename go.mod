@@ -12,7 +12,7 @@ require (
 )
 
 require (
-	github.com/VU-ASE/roverlib-go v1.2.0 // indirect
+	github.com/VU-ASE/roverlib-go v1.2.6 // indirect
 	github.com/go-yaml/yaml v2.1.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/kr/pretty v0.3.1 // indirect

@@ -180,7 +180,16 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 		imgWidth := buf.Cols()
 		imgHeight := buf.Rows()
 
-		log.Info().Int("width", imgWidth).Int("height", imgHeight).Msg("Read image")
+		log.Debug().Int("width", imgWidth).Int("height", imgHeight).Msg("Read image")
+
+		newThreshold, err := configuration.GetFloat("threshold-value")
+		if err != nil {
+			log.Err(err).Msg("Failed to get threshold value from tuning. Is it defined in service.yaml?")
+			continue
+		} else if thresholdValue != int(newThreshold) {
+			log.Info().Float64("threshold", newThreshold).Msg("Got new threshold value")
+			thresholdValue = int(newThreshold)
+		}
 
 		if thresholdValue > 0 {
 			// Convert the image to grayscale (for thresholding)
