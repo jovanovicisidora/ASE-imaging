@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/VU-ASE/imaging/compare/v1.1.0...v1.2.0) (2024-12-31)
+
+
+### Features
+
+* enable tuning support ([848f55b](https://github.com/VU-ASE/imaging/commit/848f55bd4efe548b4d8ebd102271b4afcc8a67f8))
+* fully working on the Rover ([c506d54](https://github.com/VU-ASE/imaging/commit/c506d5471b272e00de6e5acaa9c4d2a109f618dd))
+
+
+### Bug Fixes
+
+* service yaml ([a89b2e4](https://github.com/VU-ASE/imaging/commit/a89b2e45123de304a781c8a16b86d3662aaa5cca))
+
 ## [1.1.0](https://github.com/VU-ASE/imaging/compare/v1.0.0...v1.1.0) (2024-12-10)
 
 
