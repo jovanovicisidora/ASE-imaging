@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/VU-ASE/imaging/compare/v1.2.0...v1.2.1) (2025-02-04)
+
+
+### Bug Fixes
+
+* re-release imaging with incremented version ([f17cee0](https://github.com/VU-ASE/imaging/commit/f17cee0c658e67809b63099ccd1d4d0df465af90))
+
 ## [1.2.0](https://github.com/VU-ASE/imaging/compare/v1.1.0...v1.2.0) (2024-12-31)
 
 
