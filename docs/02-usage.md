@@ -41,7 +41,7 @@ Each frame captured by the camera is first preprocessed to identify the boundari
 
 initial image            |  after highlighting the points
 :-------------------------:|:-------------------------:
-![](orig.png)  |  ![](blob_with_line.png)
+![original_image](https://github.com/user-attachments/assets/3e289b3e-bbf6-4e8f-a0ae-c09787e71934)  |  ![with_points](https://github.com/user-attachments/assets/5b3c7df6-874a-4ec9-9d15-cb725457faf6)
 
 ## Further reading
 
