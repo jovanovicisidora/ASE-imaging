@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/VU-ASE/imaging/compare/v1.2.1...v1.2.2) (2025-03-20)
+
+
+### Bug Fixes
+
+* images and details on overview ([670d5fa](https://github.com/VU-ASE/imaging/commit/670d5faafcf42a7ecc8ad92bce728831a63f3c74))
+* memory leak ([c0aa51c](https://github.com/VU-ASE/imaging/commit/c0aa51c99745ef4da939abad611c1afe61b90acd))
+
 ## [1.2.1](https://github.com/VU-ASE/imaging/compare/v1.2.0...v1.2.1) (2025-02-04)
 
 
