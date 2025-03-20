@@ -227,7 +227,7 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 			if longestConsecutive != nil && (preferredX < longestConsecutive.Start || preferredX > longestConsecutive.End) {
 				longestConsecutive = nil
 			}
-			horizontalSlice.Clone() // avoid memory leaks
+			horizontalSlice.Close() // avoid memory leaks
 		}
 
 		// Create a canvas that can be drawn on
@@ -325,6 +325,8 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 			},
 		}
 		outputBytes, err := proto.Marshal(&output)
+		imgBytes.Close() // avoid memory leaks
+
 		if err != nil {
 			log.Err(err).Msg("Error marshalling sensor output")
 			continue
