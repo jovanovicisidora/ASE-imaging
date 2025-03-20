@@ -1,7 +1,7 @@
 name: imaging
 author: vu-ase
 source: https://github.com/vu-ase/imaging
-version: 1.0.1
+version: 1.2.2
 description: Reads an image from a video source (v4l2/sim), processes it and sends it to the controller
 
 commands:
