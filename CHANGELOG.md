@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/VU-ASE/imaging/compare/v1.2.3...v1.2.4) (2025-03-29)
+
+
+### Bug Fixes
+
+* smoother steering with higher scan y-coordinate ([e96c6a1](https://github.com/VU-ASE/imaging/commit/e96c6a10f833aa2a44b4642b5ee33e9cc378f915))
+
 ## [1.2.3](https://github.com/VU-ASE/imaging/compare/v1.2.2...v1.2.3) (2025-03-29)
 
 
