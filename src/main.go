@@ -163,7 +163,7 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 	defer buf.Close()
 
 	// Y coordinate of the horizontal slice used for steering
-	const sliceY = 400
+	const sliceY = 270
 
 	// Start with the middle of the image as the preferred X to find the white slice
 	// (assuming that the car starts on the middle of the track)
