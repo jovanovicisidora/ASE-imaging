@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/VU-ASE/imaging/compare/v1.2.2...v1.2.3) (2025-03-29)
+
+
+### Bug Fixes
+
+* updated roverlib and rovercom ([4b0db0b](https://github.com/VU-ASE/imaging/commit/4b0db0bc1be6648804fe1a416078c15b074e99a0))
+
 ## [1.2.2](https://github.com/VU-ASE/imaging/compare/v1.2.1...v1.2.2) (2025-03-20)
 
 
