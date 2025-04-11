@@ -173,15 +173,15 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 	for {
 		imageIndex++
 		if ok := cam.Read(&buf); !ok {
-			imgFileName := fmt.Sprintf("../images/image_%d.jpg", imageIndex)
-			gocv.IMWrite(imgFileName, buf)
-
 			log.Warn().Err(err).Msg("Error reading from camera")
 			continue
 		}
 		if buf.Empty() {
 			continue
 		}
+		imgFileName := fmt.Sprintf("../images/image_%d.jpg", imageIndex)
+		gocv.IMWrite(imgFileName, buf)
+
 		imgWidth := buf.Cols()
 		imgHeight := buf.Rows()
 
