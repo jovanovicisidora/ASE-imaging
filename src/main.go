@@ -168,9 +168,14 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 	// Start with the middle of the image as the preferred X to find the white slice
 	// (assuming that the car starts on the middle of the track)
 	preferredX := imgWidth / 2
+	imageIndex := 0
 
 	for {
+		imageIndex++
 		if ok := cam.Read(&buf); !ok {
+			imgFileName := fmt.Sprintf("../images/image_%d.jpg", imageIndex)
+			gocv.IMWrite(imgFileName, buf)
+
 			log.Warn().Err(err).Msg("Error reading from camera")
 			continue
 		}
