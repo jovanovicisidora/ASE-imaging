@@ -180,7 +180,15 @@ func run(service roverlib.Service, configuration *roverlib.ServiceConfiguration)
 			continue
 		}
 		imgFileName := fmt.Sprintf("../images/image_%d.jpg", imageIndex)
-		gocv.IMWrite(imgFileName, buf)
+		if ok := gocv.IMWrite(imgFileName, buf); !ok {
+			log.Error().Str("file", imgFileName).Msg("Failed to save image")
+		} else {
+			if _, err := os.Stat(imgFileName); os.IsNotExist(err) {
+				log.Error().Str("file", imgFileName).Msg("Image file does not exist after saving")
+			} else {
+				log.Info().Str("file", imgFileName).Msg("Image successfully saved")
+			}
+		}
 
 		imgWidth := buf.Cols()
 		imgHeight := buf.Rows()
